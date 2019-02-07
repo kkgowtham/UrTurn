@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1001833718439",
+    "firebase_url": "https://urturn-332c6.firebaseio.com",
+    "project_id": "urturn-332c6",
+    "storage_bucket": "urturn-332c6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1001833718439:android:6326002f85086b6b",
+        "android_client_info": {
+          "package_name": "org.urturn.com.urturn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1001833718439-5p1rqlv5ufpfhfnaa7p6g6dbd1iapvia.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.urturn.com.urturn",
+            "certificate_hash": "bbf8e6dd56388033ccf9cf5183324d128e9a14ea"
+          }
+        },
+        {
+          "client_id": "1001833718439-7m2igfvop8e12uclue17bvg3cv2ka01r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4LqwN_DT6FqtnvPA9mMtqP_nzimUYQcM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1001833718439-7m2igfvop8e12uclue17bvg3cv2ka01r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

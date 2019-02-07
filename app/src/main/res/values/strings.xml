@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Ur Turn</string>
+    <string-array name="blood_group">
+        <item name="blood1">A+</item>
+        <item name="blood2">O+</item>
+        <item name="blood3">B+</item>
+        <item name="blood4">AB+</item>
+        <item name="blood5">A-</item>
+        <item name="blood6">O-</item>
+        <item name="blood7">B-</item>
+        <item name="blood8">AB-</item>
+    </string-array>
+    <string name="msg_token_fmt">Message Token</string>
+</resources>
