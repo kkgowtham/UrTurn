@@ -4,9 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -31,38 +33,46 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG ="MainActivity";
+    BottomNavigationView bottomNavigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "getInstanceId failed", task.getException());
-                            return;
-                        }
-
-                        // Get new Instance ID token
-                        String token = task.getResult().getToken();
-
-                        // Log and toast
-                        @SuppressLint({"StringFormatInvalid", "LocalSuppress"})
-                        String msg = getString(R.string.msg_token_fmt, token);
-                        Log.d(TAG, msg);
-                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
-        Button signout_button=findViewById(R.id.button_signout);
+        bottomNavigationView=findViewById(R.id.bottom_nav_main);
+        bottomNavigationView.setSelectedItemId(R.id.blood_main_menu);
+        getSupportFragmentManager().beginTransaction().replace(R.id.container_main_page,new BloodNotificationFragment()).commit();
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId())
+                {
+                    case R.id.blood_main_menu:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container_main_page,new BloodNotificationFragment()).commit();
+                        break;
+                    case R.id.home_main_menu:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container_main_page,new HomeFragment()).commit();
+                        break;
+                    case R.id.groups_main_menu:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container_main_page,new MyGroups()).commit();
+                        break;
+                    case R.id.profile_main_menu:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container_main_page,new ProfileFragment()).commit();
+                        break;
+                    default:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container_main_page,new BloodNotificationFragment()).commit();
+                        break;
+                }
+                return true;
+            }
+        });
+        /*Button signout_button=findViewById(R.id.button_signout);
         signout_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(MainActivity.this,GoogleSignInActivity.class));
             }
-        });
+        });*/
     }
 
     @Override
@@ -75,31 +85,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void goToProfileActivity(View view) {
-        Intent intent=new Intent(getApplicationContext(),ProfileActivity.class);
-        startActivity(intent);
-        //startActivity(new Intent(MainActivity.this,ProfileActivity.class));
-    }
-
-    public void goToRequestBlood(View v)
-    {
-        startActivity(new Intent(MainActivity.this,RequestBloodActivity.class));
-    }
-
-    public void goToRequestList(View v)
-    {
-        startActivity(new Intent(MainActivity.this,RecentBloodRequests.class));
-    }
-
-    public void goToCreateGroup(View view) {
-        startActivity(new Intent(this,CreateGroupActivity.class));
-    }
-
-    public void goToSearchGroup(View view) {
-        startActivity(new Intent(this,SearchGroup.class));
-    }
-
-    public void goToMyGroupsActivity(View view) {
-        startActivity(new Intent(this,MyGroups.class));
-    }
 }

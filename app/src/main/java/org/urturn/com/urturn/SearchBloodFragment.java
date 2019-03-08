@@ -1,65 +1,104 @@
 package org.urturn.com.urturn;
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
+import com.google.firebase.database.ValueEventListener;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
-public class RequestBloodActivity extends AppCompatActivity {
 
-    FirebaseDatabase mDatabase;
-    DatabaseReference mDatabaseReference;
-   private Context context;
-    private EditText mPatientName,mHospitalName,mTimeLeft,mNoofUnits;
+public class SearchBloodFragment extends Fragment {
     private Spinner mcitySpinner,mStateSpinner,mBloodGroup;
-    String userName;
     private static final String KEY_STATE = "state";
     private static final String KEY_CITIES = "cities";
     String state;
     private Button submitBtn;
+    Context context;
+    RecyclerView recyclerView;
+
+    public SearchBloodFragment() {
+        // Required empty public constructor
+    }
+
+    private ArrayList<UserModel> list=new ArrayList<>();
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_request_blood);
-        context=getApplicationContext();
-        mDatabase=FirebaseDatabase.getInstance();
-        mDatabaseReference=mDatabase.getReference();
-        mPatientName=findViewById(R.id.br_name);
-        mHospitalName=findViewById(R.id.br_hosptalname);
-        submitBtn=findViewById(R.id.submit_btn_request_blood);
-        mTimeLeft=findViewById(R.id.br_timewithin);
-        mNoofUnits=findViewById(R.id.no_of_units);
-        mcitySpinner=findViewById(R.id.cities_request_spinner);
-        mStateSpinner=findViewById(R.id.state_request_spinner);
-        mBloodGroup=findViewById(R.id.blood_group_spinner);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view=inflater.inflate(R.layout.fragment_search_blood, container, false);
+        mcitySpinner=view.findViewById(R.id.cities_search_blood);
+        mStateSpinner=view.findViewById(R.id.state_search_blood);
+        mBloodGroup=view.findViewById(R.id.blood_search_blood);
+        recyclerView=view.findViewById(R.id.recycler_view_search_blood_fragment);
+        submitBtn=view.findViewById(R.id.submit_btn_search_fragment);
         parseJson();
-        ArrayAdapter<String> adapter=new ArrayAdapter<String>(context,android.R.layout.simple_spinner_item,getResources().getStringArray(R.array.blood_group));
+        ArrayAdapter<String> adapter=new ArrayAdapter<>(context,android.R.layout.simple_spinner_dropdown_item,getResources().getStringArray(R.array.blood_group));
         mBloodGroup.setAdapter(adapter);
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requestBlood();
+              filterResults();
+            }
+        });
+        return view;
+    }
+
+    private void filterResults() {
+        String city=mcitySpinner.getSelectedItem().toString();
+        String state=mStateSpinner.getSelectedItem().toString();
+        final String bloodGroup=mBloodGroup.getSelectedItem().toString();
+        DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("Users").child(state).child(city);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataSnapshot1:dataSnapshot.getChildren())
+                {
+                    UserModel userModel=dataSnapshot1.getValue(UserModel.class);
+                    assert userModel != null;
+                    if(userModel.getBloodGroup().equals(bloodGroup))
+                    {
+                        list.add(userModel);
+                    }
+                }
+                if(list.size()==0)
+                {
+                    Toast.makeText(context,"Users Not Found",Toast.LENGTH_SHORT).show();
+                    return;
+                }else {
+                    SearchBloodRecyclerAdapter adapter=new SearchBloodRecyclerAdapter(context,list);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                    recyclerView.setHasFixedSize(true);
+                    recyclerView.setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }
+
     private void parseJson() {
         final List<State> statesList = new ArrayList<>();
         final List<String> states = new ArrayList<>();
@@ -67,6 +106,7 @@ public class RequestBloodActivity extends AppCompatActivity {
         try {
             JSONArray responseArray=new JSONArray(json);
             try {
+                //Parse the JSON response array by iterating over it
                 for (int i = 0; i < responseArray.length(); i++) {
                     JSONObject response = responseArray.getJSONObject(i);
                     String state = response.getString(KEY_STATE);
@@ -107,39 +147,10 @@ public class RequestBloodActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-    public void requestBlood() {
 
-        try {
-            String email= FirebaseAuth.getInstance().getCurrentUser().getEmail();
-            userName=email.substring(0,email.indexOf('@'));
-            BloodDonateModel bloodDonateModel=new BloodDonateModel(
-                    mPatientName.getText().toString(),
-                    mTimeLeft.getText().toString(),
-                    mBloodGroup.getSelectedItem().toString(),
-                    Integer.parseInt(mNoofUnits.getText().toString()),
-                    mHospitalName.getText().toString(),
-                    state,
-                    mcitySpinner.getSelectedItem().toString(),
-                    getDateTime()
-            );
-            mDatabaseReference.child("BloodRequests").child(userName).push().setValue(bloodDonateModel);
-            mDatabaseReference.child("RequestBasedOnCities").child(mcitySpinner.getSelectedItem().toString()).push().setValue(bloodDonateModel).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Toast.makeText(context,"Added",Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-        catch (NullPointerException e)
-        {
-            e.printStackTrace();
-        }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context=context;
     }
-    private String getDateTime() {
-        String date=java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-        return date;
-    }
-
-
-
 }

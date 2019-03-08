@@ -14,9 +14,11 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -27,9 +29,11 @@
         <activity android:name=".RequestBloodActivity" />
         <activity android:name=".RecentBloodRequests" />
         <activity android:name=".CreateGroupActivity" />
-        <activity android:name=".MyGroups" />
         <activity android:name=".SearchGroup" />
-        <activity android:name=".GroupMessageActivity"></activity>
+        <activity
+            android:name=".GroupMessageActivity"
+            android:theme="@style/NoActionBarTheme" />
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="Ur Turn Blood Channel" />
@@ -40,6 +44,28 @@
             android:name="firebase_analytics_collection_enabled"
             android:value="false" />
 
+        <activity android:name=".ChatActivityGroup" />
+        <activity android:name=".BloodActivity" />
+        <activity android:name=".PostMessageActivity" />
+    <meta-data android:name="instamojo.orderauth.url"
+                   android:value="https://urturn.000webhostapp.com/access_token.php"
+            />
     </application>
+    <uses-permission-sdk-23 android:name="android.permission.RECEIVE_SMS"/>
+ 
+    <uses-permission-sdk-23 android:name="android.permission.READ_SMS"/>
+ 
+    <uses-permission-sdk-23 android:name="android.permission.READ_PHONE_STATE"/>
+ 
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+ 
+    <uses-permission android:name="android.permission.READ_SMS"/>
+ 
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+ 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+ 
+    <uses-permission android:name="android.permission.INTERNET"/>
+ 
 
 </manifest>

@@ -1,17 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MyGroups">
+    android:orientation="horizontal">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_mygroup"
+        app:titleTextColor="@color/white"
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+            <ImageView
+                android:id="@+id/search_button_groups"
+                android:layout_marginRight="25dp"
+                android:layout_marginEnd="25dp"
+                android:layout_width="40dp"
+                android:layout_gravity="end"
+                android:background="@drawable/ic_search_black_24dp"
+                android:layout_height="40dp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your Turn"
+                android:textSize="20sp"
+                android:layout_gravity="center_vertical"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                />
 
-
+        </LinearLayout>
+    </android.support.v7.widget.Toolbar>
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/recyclerview_my_groups"
         />
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

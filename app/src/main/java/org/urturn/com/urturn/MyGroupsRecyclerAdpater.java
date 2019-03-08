@@ -42,6 +42,7 @@ public class MyGroupsRecyclerAdpater extends RecyclerView.Adapter<MyGroupsRecycl
                 Intent intent=new Intent(context,GroupMessageActivity.class);
                 intent.putExtra("admin",model.getCretedBy());
                 intent.putExtra("groupId",model.getGroupId());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
         });
@@ -60,5 +61,4 @@ public class MyGroupsRecyclerAdpater extends RecyclerView.Adapter<MyGroupsRecycl
              groupDp=(CircularImageView)itemView.findViewById(R.id.group_dp_mygroups);
          }
      }
-
 }

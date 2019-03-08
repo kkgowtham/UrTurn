@@ -41,9 +41,11 @@ public class StateAdapter extends ArrayAdapter<State> {
 
     private View initView(int position) {
         State state = getItem(position);
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.state_list, null);
+        View v=LayoutInflater.from(getContext()).inflate(R.layout.state_list,null);
+        //LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        //View v = inflater.inflate(R.layout.state_list, null);
         TextView textView =  v.findViewById(R.id.spinnerText);
+        assert state != null;
         textView.setText(state.getStateName());
         return v;
 

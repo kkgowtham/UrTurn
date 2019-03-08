@@ -8,7 +8,16 @@ public class UserModel {
     private String address;
     private String city;
 
-    public UserModel(String phoneNo, String name, String picUrl, String email, String address, String city, String state) {
+    public String getBloodGroup() {
+        return bloodGroup;
+    }
+
+    public void setBloodGroup(String bloodGroup) {
+        this.bloodGroup = bloodGroup;
+    }
+
+    private String bloodGroup;
+    public UserModel(String phoneNo, String name, String picUrl, String email, String address, String city, String state,String bloodGroup) {
         this.phoneNo = phoneNo;
         this.name = name;
         this.picUrl = picUrl;
@@ -16,6 +25,7 @@ public class UserModel {
         this.address = address;
         this.city = city;
         this.state = state;
+        this.bloodGroup=bloodGroup;
     }
 
     public UserModel() {

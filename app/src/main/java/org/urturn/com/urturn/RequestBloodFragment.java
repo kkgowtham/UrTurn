@@ -1,15 +1,20 @@
 package org.urturn.com.urturn;
 
+
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -23,11 +28,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class RequestBloodActivity extends AppCompatActivity {
+
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class RequestBloodFragment extends Fragment {
+
 
     FirebaseDatabase mDatabase;
     DatabaseReference mDatabaseReference;
-   private Context context;
+Context context;
     private EditText mPatientName,mHospitalName,mTimeLeft,mNoofUnits;
     private Spinner mcitySpinner,mStateSpinner,mBloodGroup;
     String userName;
@@ -35,21 +45,25 @@ public class RequestBloodActivity extends AppCompatActivity {
     private static final String KEY_CITIES = "cities";
     String state;
     private Button submitBtn;
+    public RequestBloodFragment() {
+        // Required empty public constructor
+    }
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_request_blood);
-        context=getApplicationContext();
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view= inflater.inflate(R.layout.fragment_request_blood, container, false);
         mDatabase=FirebaseDatabase.getInstance();
         mDatabaseReference=mDatabase.getReference();
-        mPatientName=findViewById(R.id.br_name);
-        mHospitalName=findViewById(R.id.br_hosptalname);
-        submitBtn=findViewById(R.id.submit_btn_request_blood);
-        mTimeLeft=findViewById(R.id.br_timewithin);
-        mNoofUnits=findViewById(R.id.no_of_units);
-        mcitySpinner=findViewById(R.id.cities_request_spinner);
-        mStateSpinner=findViewById(R.id.state_request_spinner);
-        mBloodGroup=findViewById(R.id.blood_group_spinner);
+        mPatientName=view.findViewById(R.id.br_name);
+        mHospitalName=view.findViewById(R.id.br_hosptalname);
+        submitBtn=view.findViewById(R.id.submit_btn_request_blood);
+        mTimeLeft=view.findViewById(R.id.br_timewithin);
+        mNoofUnits=view.findViewById(R.id.no_of_units);
+        mcitySpinner=view.findViewById(R.id.cities_request_spinner);
+        mStateSpinner=view.findViewById(R.id.state_request_spinner);
+        mBloodGroup=view.findViewById(R.id.blood_group_spinner);
         parseJson();
         ArrayAdapter<String> adapter=new ArrayAdapter<String>(context,android.R.layout.simple_spinner_item,getResources().getStringArray(R.array.blood_group));
         mBloodGroup.setAdapter(adapter);
@@ -59,6 +73,13 @@ public class RequestBloodActivity extends AppCompatActivity {
                 requestBlood();
             }
         });
+        return view;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context=context;
     }
     private void parseJson() {
         final List<State> statesList = new ArrayList<>();
@@ -67,6 +88,7 @@ public class RequestBloodActivity extends AppCompatActivity {
         try {
             JSONArray responseArray=new JSONArray(json);
             try {
+                //Parse the JSON response array by iterating over it
                 for (int i = 0; i < responseArray.length(); i++) {
                     JSONObject response = responseArray.getJSONObject(i);
                     String state = response.getString(KEY_STATE);
@@ -139,7 +161,5 @@ public class RequestBloodActivity extends AppCompatActivity {
         String date=java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
         return date;
     }
-
-
 
 }

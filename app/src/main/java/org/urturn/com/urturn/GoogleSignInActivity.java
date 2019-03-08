@@ -90,6 +90,7 @@ public class GoogleSignInActivity extends AppCompatActivity {
                 //Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 //authenticating with firebase
+                assert account != null;
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
                 Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -112,8 +113,7 @@ public class GoogleSignInActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             new updateDatabase().execute();
-                            Toast.makeText(getApplicationContext(), "User Signed In", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(GoogleSignInActivity.this,MainActivity.class));
+                            //Toast.makeText(getApplicationContext(), "User Signed In", Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -160,6 +160,7 @@ public class GoogleSignInActivity extends AppCompatActivity {
                         int i=email1.indexOf('@');
                         String username=email1.substring(0,i);
                         if(!list.contains(username)) {
+                            startActivity(new Intent(GoogleSignInActivity.this,ProfileActivity.class));
                             try {
                                 String name = user.getDisplayName();
                                 String email = user.getEmail();
@@ -170,7 +171,7 @@ public class GoogleSignInActivity extends AppCompatActivity {
                                 String address = "";
                                 String city = "";
                                 String state = "";
-                                UserModel userModel=new UserModel(phoneNo,name,picurl,email,address,city,state);
+                                UserModel userModel=new UserModel(phoneNo,name,picurl,email,address,city,state,"O+");
                                 databaseReference.child(e).setValue(userModel);
                             }catch (NullPointerException e)
                             {
@@ -178,7 +179,8 @@ public class GoogleSignInActivity extends AppCompatActivity {
                             }
                         }
                         else {
-                            Toast.makeText(getApplicationContext(),"User Already Exists",Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(GoogleSignInActivity.this,MainActivity.class));
+                            //Toast.makeText(getApplicationContext(),"User Already Exists",Toast.LENGTH_SHORT).show();
                         }
                     }
                     catch (Exception e)

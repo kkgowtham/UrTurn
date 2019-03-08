@@ -47,7 +47,7 @@ public class ProfileActivity extends AppCompatActivity {
     private static final String KEY_STATE = "state";
     private static final String KEY_CITIES = "cities";
     Spinner stateSpinner;
-    Spinner citiesSpinner;
+    Spinner citiesSpinner,bloodGroupSpinner;
     String state;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,17 +57,16 @@ public class ProfileActivity extends AppCompatActivity {
         stateSpinner = findViewById(R.id.stateSpinner);
         citiesSpinner = findViewById(R.id.citiesSpinner);
         textName = findViewById(R.id.textViewName);
+        bloodGroupSpinner=findViewById(R.id.blood_group_spinner);
         textEmail = findViewById(R.id.textViewEmail);
         database=FirebaseDatabase.getInstance();
         databaseReference=database.getReference("Users");
         list=new ArrayList<>();
         mAuth=FirebaseAuth.getInstance();
+        ArrayAdapter<String> adapter=new ArrayAdapter<>(getApplicationContext(),android.R.layout.simple_spinner_dropdown_item,getResources().getStringArray(R.array.blood_group));
+        bloodGroupSpinner.setAdapter(adapter);
         final FirebaseUser user = mAuth.getCurrentUser();
         try {
-           /* Glide.with(this)
-                    .load(user.getPhotoUrl())
-                    .into(imageView);
-                    */
            String email=mAuth.getCurrentUser().getEmail();
            int i=email.indexOf('@');
             h=email.substring(0,i);
@@ -128,6 +127,7 @@ public class ProfileActivity extends AppCompatActivity {
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                         State cityDetails = stateAdapter.getItem(position);
+                        assert cityDetails != null;
                         state=cityDetails.getStateName();
                         List<String> cityList = cityDetails.getCities();
                         ArrayAdapter citiesAdapter = new ArrayAdapter<>(ProfileActivity.this,
@@ -156,15 +156,16 @@ public class ProfileActivity extends AppCompatActivity {
         EditText addressEt=findViewById(R.id.address_edittext);
         String phoneno=phoneEditText.getText().toString();
         String address=addressEt.getText().toString();
-        final UserModel userModel=new UserModel(phoneno,mName,mPicUrl,memail,address,city,state);
+        String bloodGroup=bloodGroupSpinner.getSelectedItem().toString();
+        final UserModel userModel=new UserModel(phoneno,mName,mPicUrl,memail,address,city,state,bloodGroup);
         databaseReference.setValue(userModel);
-        final DatabaseReference dbRef=FirebaseDatabase.getInstance().getReference("DeviceToken/"+userModel.getCity());
+       /* final DatabaseReference dbRef=FirebaseDatabase.getInstance().getReference("DeviceToken/"+userModel.getCity());
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
             @Override
             public void onSuccess(InstanceIdResult instanceIdResult) {
                 String deviceToken=instanceIdResult.getToken();
                 dbRef.child(h).setValue(deviceToken);
             }
-        });
+        });*/
     }
 }
