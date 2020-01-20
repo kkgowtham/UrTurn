@@ -5,3 +5,4 @@ Firebase Storage,
 Picasso ,Glide,
 Instamojo Integration,
 Firebase Authentication(Google Signin,Facebook Signin,Phone Authentication,Email Verification)
+RecyclerView , Cardview, Chat Feature with Realtime Database
